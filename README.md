@@ -11,11 +11,9 @@
 
 ---
 
-## 👥 Authors & Supervision
+## 👥 Author
 
-* **Authors:** Md Dilnawaz Ahmad, Venisetty Vishwani, Challa Lahari, Akhil Kapruwan  
-* **Faculty Advisors / Supervisors:** Dr. Saunak & Prof. Vishnu  
-* **Department:** Department of Computer Science & Engineering  
+* **Authors:** Md Dilnawaz Ahmad
 
 ---
 
