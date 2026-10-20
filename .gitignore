@@ -1,0 +1,45 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+venv/
+dummy_venv/
+env/
+.venv/
+ENV/
+
+# Large Archives & Downloaded Datasets (>100MB exceeds GitHub limits)
+*.zip
+Dl_project.zip
+data/potsdam/
+
+# Model Checkpoints & Pretrained Weights
+checkpoints/
+*.pth
+*.pt
+*.bin
+*.onnx
+
+# Caches & Logs
+.cache/
+logs/
+.pytest_cache/
+.ipynb_checkpoints/
+*.log
+
+# Temporary / Scratch Files
+tmp/
+*.tmp
+~$*.pptx
+ASGNet_Presentation_v2.pptx
+ASGNet_Presentation_v3.pptx
+ASGNet_Presentation_v4.pptx
+
+# IDE & OS Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

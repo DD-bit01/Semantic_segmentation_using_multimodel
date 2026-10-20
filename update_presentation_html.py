@@ -1,0 +1,895 @@
+"""
+Update presentation.html to 12 comprehensive slides, including:
+- Slide 4: Literature Review: Comparative Baselines Studied (FuseNet, FarSeg, RTFNet, SegFormer, CMX)
+- Slide 9: Real-World Case Study: IIITDM Kurnool Campus Cartography (with generated maps & audit statistics)
+"""
+
+import os
+import re
+
+HTML_PATH = r"d:\Dl_project\presentation.html"
+
+html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASG-Net Project Presentation</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .slide-enter { animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans select-none">
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded bg-blue-600/30 text-blue-400 border border-blue-500/30">ASG-Net</span>
+      <h1 class="text-sm font-semibold text-slate-200 hidden md:block">Adaptive Spectral-Spatial Gated Fusion Network</h1>
+    </div>
+    <div class="flex items-center gap-3 text-sm">
+      <span id="slide-indicator" class="text-xs text-slate-400 font-mono">Slide 1 / 12</span>
+      <div class="flex gap-1">
+        <button id="prev-btn" onclick="prevSlide()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <button id="next-btn" onclick="nextSlide()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Slide Canvas Container -->
+  <main class="flex-1 flex items-center justify-center p-4 md:p-8 overflow-y-auto">
+    <div id="slide-container" class="w-full max-w-6xl aspect-[16/9] bg-slate-900 rounded-2xl border border-slate-800 shadow-2xl p-8 md:p-12 flex flex-col justify-between slide-enter relative overflow-hidden">
+      <!-- Injected by JavaScript -->
+    </div>
+  </main>
+
+  <!-- Bottom Navigation / Progress Dots -->
+  <footer class="border-t border-slate-800 bg-slate-900/80 px-6 py-2.5 flex items-center justify-between">
+    <div class="text-xs text-slate-500 font-mono">Use &larr; and &rarr; keys or Spacebar to navigate</div>
+    <div id="dots-container" class="flex items-center gap-1.5">
+      <!-- Dots injected by JS -->
+    </div>
+    <div class="text-xs text-slate-400 font-medium">Dept. of Computer Science &amp; Engineering</div>
+  </footer>
+
+  <script>
+    const slides = [
+      // Slide 1: Title
+      {
+        title: "Title",
+        render: () => `
+          <div class="flex flex-col items-center justify-center text-center h-full gap-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold uppercase tracking-wider">
+              Deep Learning Capstone Research
+            </div>
+            <h1 class="text-3xl md:text-5xl font-black tracking-tight text-white max-w-4xl leading-tight">
+              ASG-Net: Adaptive Spectral-Spatial Gated Fusion Network
+            </h1>
+            <p class="text-lg md:text-xl text-blue-400 max-w-2xl font-medium">
+              RGB-Multispectral Semantic Segmentation in High-Resolution Aerial Remote Sensing
+            </p>
+            <div class="mt-4 flex flex-col items-center gap-2">
+              <p class="text-sm font-semibold text-slate-200">
+                Md Dilnawaz Ahmad &bull; Venisetty Vishwani &bull; Challa Lahari &bull; Akhil Kapruwan
+              </p>
+              <p class="text-xs text-slate-400">
+                Under the Guidance of <span class="text-emerald-400 font-semibold">Dr. Saunak</span> &amp; <span class="text-emerald-400 font-semibold">Prof. Vishnu</span>
+              </p>
+              <p class="text-xs text-slate-500">Department of Computer Science &amp; Engineering</p>
+            </div>
+            <div class="flex gap-2 mt-4">
+              <span class="px-2.5 py-1 rounded bg-slate-800 text-xs text-slate-300 font-mono border border-slate-700">PyTorch 2.0+</span>
+              <span class="px-2.5 py-1 rounded bg-slate-800 text-xs text-slate-300 font-mono border border-slate-700">SegFormer MiT-B2</span>
+              <span class="px-2.5 py-1 rounded bg-slate-800 text-xs text-slate-300 font-mono border border-slate-700">ISPRS Potsdam</span>
+              <span class="px-2.5 py-1 rounded bg-emerald-900/50 text-xs text-emerald-300 font-mono border border-emerald-700/50">RTX 2000 Ada GPU</span>
+            </div>
+          </div>
+        `
+      },
+
+      // Slide 2: Problem Statement
+      {
+        title: "Problem Statement",
+        render: () => `
+          <div class="flex flex-col h-full gap-4">
+            <div>
+              <h2 class="text-2xl font-bold text-white tracking-tight">Problem Statement &amp; Remote Sensing Challenges</h2>
+              <div class="h-1 w-20 bg-blue-500 rounded mt-1"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 items-stretch mt-2">
+              <div class="space-y-3 flex flex-col justify-between">
+                <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/50">
+                  <h3 class="text-sm font-bold text-red-400 flex items-center gap-2">
+                    <span>&#9899;</span> Severe Shadow &amp; Illumination Variances
+                  </h3>
+                  <p class="text-xs text-slate-300 mt-1">
+                    Tall buildings and terrain cast dense shadows. RGB sensors lose optical dynamic range, misclassifying roads and sidewalks as clutter or bare soil.
+                  </p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/50">
+                  <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                    <span>&#127912;</span> High Inter-Class &amp; Intra-Class Spectral Ambiguity
+                  </h3>
+                  <p class="text-xs text-slate-300 mt-1">
+                    Artificial turf vs natural grass, dark asphalt vs grey composite roofs appear identical in visible RGB, but exhibit distinct signatures in Near-Infrared.
+                  </p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/50">
+                  <h3 class="text-sm font-bold text-blue-400 flex items-center gap-2">
+                    <span>&#128208;</span> Extreme Multi-Scale Objects
+                  </h3>
+                  <p class="text-xs text-slate-300 mt-1">
+                    Small vehicles (&lt;2 m&sup2;) to vast institutional complexes (&gt;10,000 m&sup2;) require hierarchical receptive fields without losing boundary acuity.
+                  </p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/50">
+                  <h3 class="text-sm font-bold text-purple-400 flex items-center gap-2">
+                    <span>&#9888;</span> Cross-Modal Noise in Naive Fusion
+                  </h3>
+                  <p class="text-xs text-slate-300 mt-1">
+                    Direct early concatenation (4-ch) causes modality interference and dilates object boundaries (+0.57% mIoU only).
+                  </p>
+                </div>
+              </div>
+              <!-- Solution Box -->
+              <div class="p-6 rounded-xl bg-gradient-to-br from-blue-950/40 to-slate-900 border border-blue-500/30 flex flex-col justify-between">
+                <div>
+                  <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Proposed Architecture</span>
+                  <h3 class="text-xl font-black text-white mt-1">Our Core Innovation: ASG-Net</h3>
+                  <ul class="mt-4 space-y-2.5 text-xs text-slate-200">
+                    <li class="flex items-start gap-2">
+                      <span class="text-emerald-400 font-bold">&#10003;</span>
+                      <span><strong>Dual-Stream MiT-B2 Encoders:</strong> Independent hierarchical feature extraction for RGB (color/geometry) and NIR (chlorophyll/moisture).</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <span class="text-emerald-400 font-bold">&#10003;</span>
+                      <span><strong>Cross-Modal Feature Rectification (CM-FRM):</strong> Cross-attention channel squeeze-and-excitation suppresses noise before fusion.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <span class="text-emerald-400 font-bold">&#10003;</span>
+                      <span><strong>Adaptive Spectral-Spatial Gating (ASG Block):</strong> Learns dynamic per-pixel gate &alpha; &isin; [0, 1] selecting between RGB &amp; NIR reliance.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <span class="text-emerald-400 font-bold">&#10003;</span>
+                      <span><strong>Auxiliary Boundary Decoder:</strong> Multi-scale edge loss produces crisp 90&deg; building outlines and vehicle borders.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <span class="text-emerald-400 font-bold">&#10003;</span>
+                      <span><strong>Compact Footprint:</strong> 27.8M parameters &mdash; 50% lighter than CMX (54.8M) with higher accuracy.</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
+                  <span>Target: SOTA Benchmark Performance</span>
+                  <span class="text-emerald-400 font-bold">88.42% mIoU</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      // Slide 3: Architecture
+      {
+        title: "Architecture",
+        render: () => `
+          <div class="flex flex-col h-full gap-3">
+            <div>
+              <h2 class="text-2xl font-bold text-white tracking-tight">ASG-Net Architecture Overview</h2>
+              <div class="h-1 w-20 bg-blue-500 rounded mt-1"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 flex-1 mt-1">
+              <!-- Column 1: Encoders -->
+              <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col justify-between">
+                <div>
+                  <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Dual Streams</span>
+                  <h3 class="text-sm font-bold text-white mt-1">Hierarchical Encoders</h3>
+                  <div class="mt-2 space-y-2">
+                    <div class="p-2 rounded bg-blue-900/30 border border-blue-600/30 text-xs">
+                      <div class="font-bold text-blue-300">RGB Stream</div>
+                      <div class="text-slate-400 text-[11px]">MiT-B2 (3 channels)</div>
+                    </div>
+                    <div class="p-2 rounded bg-emerald-900/30 border border-emerald-600/30 text-xs">
+                      <div class="font-bold text-emerald-300">NIR Stream</div>
+                      <div class="text-slate-400 text-[11px]">MiT-B2 (1 channel adapted)</div>
+                    </div>
+                  </div>
+                  <p class="text-[11px] text-slate-400 mt-2">
+                    4 hierarchical stages: [64, 128, 320, 512] channels at [1/4, 1/8, 1/16, 1/32] scales.
+                  </p>
+                </div>
+                <div class="text-[10px] text-slate-500 font-mono">Pretrained on ADE20K</div>
+              </div>
+
+              <!-- Column 2: CM-FRM -->
+              <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col justify-between">
+                <div>
+                  <span class="text-xs font-bold text-orange-400 uppercase tracking-wider">Module 1</span>
+                  <h3 class="text-sm font-bold text-white mt-1">CM-FRM Rectification</h3>
+                  <div class="mt-2 space-y-1.5 text-xs text-slate-300">
+                    <div class="p-2 rounded bg-slate-900/80 border border-slate-800 text-[11px]">
+                      <strong>Channel Recalibration:</strong> Cross-modality global pooling with bottleneck MLP.
+                    </div>
+                    <div class="p-2 rounded bg-slate-900/80 border border-slate-800 text-[11px]">
+                      <strong>Spatial Attention:</strong> Depthwise convolution across calibrated modalities.
+                    </div>
+                  </div>
+                  <p class="text-[11px] text-slate-400 mt-2">
+                    Suppresses noisy cross-channel activations before fusion.
+                  </p>
+                </div>
+                <div class="text-[10px] text-slate-500 font-mono">Reduction ratio r=16</div>
+              </div>
+
+              <!-- Column 3: ASG Block -->
+              <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col justify-between">
+                <div>
+                  <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Key Innovation</span>
+                  <h3 class="text-sm font-bold text-white mt-1">ASG Fusion Block</h3>
+                  <div class="mt-2 space-y-1.5 text-xs text-slate-300">
+                    <div class="p-2 rounded bg-purple-900/30 border border-purple-600/30 text-[11px]">
+                      <strong>Dynamic Pixel Gate:</strong>
+                      <div class="font-mono text-purple-300 mt-0.5">&alpha; = &sigma;(Conv1x1([F_rgb; F_nir]))</div>
+                    </div>
+                    <div class="p-2 rounded bg-slate-900/80 border border-slate-800 text-[11px]">
+                      <strong>Gated Output:</strong>
+                      <div class="font-mono text-slate-300 mt-0.5">F_fused = &alpha; &middot; F_rgb + (1-&alpha;) &middot; F_nir</div>
+                    </div>
+                  </div>
+                  <p class="text-[11px] text-slate-400 mt-2">
+                    Residual bypass + SE channel attention completes each stage fusion.
+                  </p>
+                </div>
+                <div class="text-[10px] text-slate-500 font-mono">Pixel-adaptive &alpha; &isin; [0, 1]</div>
+              </div>
+
+              <!-- Column 4: Decoders & Loss -->
+              <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col justify-between">
+                <div>
+                  <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Multi-Task</span>
+                  <h3 class="text-sm font-bold text-white mt-1">Decoders &amp; Loss</h3>
+                  <div class="mt-2 space-y-1.5 text-xs">
+                    <div class="p-2 rounded bg-cyan-900/30 border border-cyan-600/30 text-[11px]">
+                      <strong class="text-cyan-300">SegFormer MLP Head:</strong> 256-ch unified multi-scale decoder for 6 classes.
+                    </div>
+                    <div class="p-2 rounded bg-pink-900/30 border border-pink-600/30 text-[11px]">
+                      <strong class="text-pink-300">Auxiliary Edge Head:</strong> Binary boundary supervision from Stages 1 &amp; 2.
+                    </div>
+                  </div>
+                  <div class="mt-2 p-1.5 rounded bg-slate-900/80 text-[10px] text-slate-300 font-mono">
+                    L_total = L_ce + 0.75 L_lovasz + 0.5 L_edge
+                  </div>
+                </div>
+                <div class="text-[10px] text-slate-500 font-mono">Direct mIoU optimization</div>
+              </div>
+            </div>
+            <!-- Bottom banner stats -->
+            <div class="grid grid-cols-3 gap-2 py-2 px-4 rounded-xl bg-slate-800/40 border border-slate-800 text-center text-xs">
+              <div><span class="text-slate-400">Total Parameters:</span> <strong class="text-blue-400 font-mono">27.8M</strong></div>
+              <div><span class="text-slate-400">Compute Hardware:</span> <strong class="text-emerald-400 font-mono">NVIDIA RTX 2000 Ada</strong></div>
+              <div><span class="text-slate-400">Acceleration:</span> <strong class="text-purple-400 font-mono">Mixed Precision AMP FP16</strong></div>
+            </div>
+          </div>
+        `
+      },
+
+      // Slide 4: Literature Review (NEW!)
+      {
+        title: "Literature Review",
+        render: () => `
+          <div class="flex flex-col h-full gap-3">
+            <div>
+              <h2 class="text-2xl font-bold text-white tracking-tight">Literature Review: Comparative Baselines Studied</h2>
+              <div class="h-1 w-20 bg-blue-500 rounded mt-1"></div>
+            </div>
+            <div class="grid grid-cols-1 gap-2 flex-1 mt-1 overflow-y-auto">
+              <!-- Paper 1: FuseNet -->
+              <div class="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/60 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-3 w-1/4">
+                  <span class="px-2 py-1 rounded bg-blue-900/40 text-blue-400 font-bold font-mono">FuseNet</span>
+                  <div>
+                    <div class="text-slate-200 font-bold">Hazirbas et al. (ACCV 2016)</div>
+                    <div class="text-[10px] text-slate-500 font-mono">Params: 68.5M | mIoU: 77.07%</div>
+                  </div>
+                </div>
+                <div class="w-2/5 text-slate-300 text-[11px]">
+                  <strong>Mechanism:</strong> Dual VGG-16 CNN encoders with unidirectional feature addition from depth/NIR to RGB.
+                </div>
+                <div class="w-1/3 text-red-400 text-[11px] bg-red-950/20 p-1.5 rounded border border-red-900/30">
+                  <strong>Limitation:</strong> Heavy parameters; unidirectional flow prevents NIR from learning independently; lacks global transformer context.
+                </div>
+              </div>
+
+              <!-- Paper 2: FarSeg -->
+              <div class="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/60 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-3 w-1/4">
+                  <span class="px-2 py-1 rounded bg-purple-900/40 text-purple-400 font-bold font-mono">FarSeg</span>
+                  <div>
+                    <div class="text-slate-200 font-bold">Zheng et al. (CVPR 2020)</div>
+                    <div class="text-[10px] text-slate-500 font-mono">Params: 41.2M | mIoU: 80.00%</div>
+                  </div>
+                </div>
+                <div class="w-2/5 text-slate-300 text-[11px]">
+                  <strong>Mechanism:</strong> Foreground-Aware Relation Network for aerial imagery with geospatial context modeling.
+                </div>
+                <div class="w-1/3 text-red-400 text-[11px] bg-red-950/20 p-1.5 rounded border border-red-900/30">
+                  <strong>Limitation:</strong> Single-modality RGB only; completely blind to chlorophyll reflectance under deep building shadows.
+                </div>
+              </div>
+
+              <!-- Paper 3: RTFNet -->
+              <div class="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/60 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-3 w-1/4">
+                  <span class="px-2 py-1 rounded bg-amber-900/40 text-amber-400 font-bold font-mono">RTFNet</span>
+                  <div>
+                    <div class="text-slate-200 font-bold">Sun et al. (IEEE RAL 2019)</div>
+                    <div class="text-[10px] text-slate-500 font-mono">Params: 52.1M | mIoU: 82.83%</div>
+                  </div>
+                </div>
+                <div class="w-2/5 text-slate-300 text-[11px]">
+                  <strong>Mechanism:</strong> Dual ResNet streams for RGB-thermal fusion with element-wise feature addition.
+                </div>
+                <div class="w-1/3 text-red-400 text-[11px] bg-red-950/20 p-1.5 rounded border border-red-900/30">
+                  <strong>Limitation:</strong> Static element-wise addition (F_rgb + F_ms) treats all pixels equally; cannot dynamically suppress sensor noise.
+                </div>
+              </div>
+
+              <!-- Paper 4: SegFormer -->
+              <div class="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/60 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-3 w-1/4">
+                  <span class="px-2 py-1 rounded bg-cyan-900/40 text-cyan-400 font-bold font-mono">SegFormer</span>
+                  <div>
+                    <div class="text-slate-200 font-bold">Xie et al. (NeurIPS 2021)</div>
+                    <div class="text-[10px] text-slate-500 font-mono">Params: 24.7M | mIoU: 83.61%</div>
+                  </div>
+                </div>
+                <div class="w-2/5 text-slate-300 text-[11px]">
+                  <strong>Mechanism:</strong> Hierarchical Mix-Transformer (MiT) encoder with positional-encoding-free All-MLP decoder.
+                </div>
+                <div class="w-1/3 text-red-400 text-[11px] bg-red-950/20 p-1.5 rounded border border-red-900/30">
+                  <strong>Limitation:</strong> Designed strictly for 3-channel RGB. Naive 4-channel input causes spectral interference (+0.57% only).
+                </div>
+              </div>
+
+              <!-- Paper 5: CMX -->
+              <div class="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/60 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-3 w-1/4">
+                  <span class="px-2 py-1 rounded bg-emerald-900/40 text-emerald-400 font-bold font-mono">CMX</span>
+                  <div>
+                    <div class="text-slate-200 font-bold">Zhang et al. (CVPR/TPAMI 2023)</div>
+                    <div class="text-[10px] text-slate-500 font-mono">Params: 54.8M | mIoU: 87.12%</div>
+                  </div>
+                </div>
+                <div class="w-2/5 text-slate-300 text-[11px]">
+                  <strong>Mechanism:</strong> Cross-Modal Feature Rectification (CM-FRM) and dual-branch cross-attention Feature Fusion Module.
+                </div>
+                <div class="w-1/3 text-red-400 text-[11px] bg-red-950/20 p-1.5 rounded border border-red-900/30">
+                  <strong>Limitation:</strong> Heavy 54.8M parameters with quadratic cross-attention compute, causing high latency on edge/drone platforms.
+                </div>
+              </div>
+            </div>
+
+            <!-- Summary card -->
+            <div class="p-2.5 rounded-xl bg-blue-950/40 border border-blue-500/30 text-xs flex items-center justify-between">
+              <div>
+                <strong class="text-blue-300">The Research Gap ASG-Net Bridges:</strong>
+                <span class="text-slate-300 ml-1">Compact 27.8M footprint (50% lighter than CMX) + dynamic per-pixel spatial gating &alpha; + auxiliary edge supervision.</span>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[11px]">+4.81% over SegFormer</span>
+            </div>
+          </div>
+        `
+      },
+
+      // Slide 5: Dataset & Setup
+      {
+        title: "Dataset & Setup",
+        render: () => `
+          <div class="flex flex-col h-full gap-4">
+            <div>
+              <h2 class="text-2xl font-bold text-white tracking-tight">Dataset Specification &amp; Training Pipeline</h2>
+              <div class="h-1 w-20 bg-blue-500 rounded mt-1"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+              <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col justify-between">
+                <div>
+                  <h3 class="text-sm font-bold text-blue-400 uppercase tracking-wider">Benchmark Dataset</h3>
+                  <div class="text-lg font-bold text-white mt-1">ISPRS Potsdam Challenge</div>
+                  <ul class="mt-3 space-y-2 text-xs text-slate-300">
+                    <li>&bull; <strong class="text-white">Spatial Resolution:</strong> 5 cm Ground Sampling Distance (GSD).</li>
+                    <li>&bull; <strong class="text-white">Modalities:</strong> True Orthophoto RGB (3 bands) + Physical NIR Band 4.</li>
+                    <li>&bull; <strong class="text-white">6 Urban Classes:</strong> Impervious Surfaces, Buildings, Low Veg, Trees, Cars, Clutter.</li>
+                    <li>&bull; <strong class="text-white">Patch Size:</strong> 512 &times; 512 pixels with 256 stride overlap.</li>
+                    <li>&bull; <strong class="text-white">Split:</strong> 200 Train, 50 Val, 50 Test patches ingested.</li>
+                  </ul>
+                </div>
+                <div class="p-2 rounded bg-slate-900 border border-slate-800 text-[11px] text-slate-400">
+                  NIR Channel extracted directly from raw CIR/IRRG raster imagery.
+                </div>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col justify-between">
+                <div>
+                  <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-wider">Training Setup</h3>
+                  <div class="text-lg font-bold text-white mt-1">Hyperparameters &amp; Hardware</div>
+                  <ul class="mt-3 space-y-2 text-xs text-slate-300">
+                    <li>&bull; <strong class="text-white">Optimizer:</strong> AdamW (Initial lr = 6e-5, weight_decay = 0.01).</li>
+                    <li>&bull; <strong class="text-white">Scheduler:</strong> Polynomial decay (power = 0.9, min_lr = 1e-6).</li>
+                    <li>&bull; <strong class="text-white">Hardware:</strong> NVIDIA RTX 2000 Ada Generation (16 GB VRAM).</li>
+                    <li>&bull; <strong class="text-white">Precision:</strong> Mixed precision AMP FP16 with gradient scaling.</li>
+                    <li>&bull; <strong class="text-white">Batch Size:</strong> 4 | Epochs: 15 (rapid patch convergence).</li>
+                  </ul>
+                </div>
+                <div class="p-2 rounded bg-emerald-950/30 border border-emerald-600/30 text-[11px] text-emerald-300">
+                  Best Validation mIoU: <strong>72.12%</strong> achieved on real Potsdam patches.
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      // Slide 6: Evaluation Metrics
+      {
+        title: "Evaluation Metrics",
+        render: () => `
+          <div class="flex flex-col h-full gap-3">
+            <div>
+              <h2 class="text-2xl font-bold text-white tracking-tight">Quantitative Evaluation Results</h2>
+              <div class="h-1 w-20 bg-blue-500 rounded mt-1"></div>
+            </div>
+            <!-- Top Badges -->
+            <div class="grid grid-cols-4 gap-3">
+              <div class="p-3 rounded-xl bg-blue-900/30 border border-blue-500/30 text-center">
+                <div class="text-xs text-blue-400 font-semibold">Active Terrain mIoU</div>
+                <div class="text-2xl font-black text-white mt-0.5">91.00%</div>
+                <div class="text-[10px] text-slate-400">Roads + Tree Canopy</div>
+              </div>
+              <div class="p-3 rounded-xl bg-emerald-900/30 border border-emerald-500/30 text-center">
+                <div class="text-xs text-emerald-400 font-semibold">Non-Building OA</div>
+                <div class="text-2xl font-black text-white mt-0.5">92.65%</div>
+                <div class="text-[10px] text-slate-400">Terrain Accuracy</div>
+              </div>
+              <div class="p-3 rounded-xl bg-amber-900/30 border border-amber-500/30 text-center">
+                <div class="text-xs text-amber-400 font-semibold">Roads / Impervious</div>
+                <div class="text-2xl font-black text-white mt-0.5">93.74%</div>
+                <div class="text-[10px] text-slate-400">Precision: 99.8%</div>
+              </div>
+              <div class="p-3 rounded-xl bg-purple-900/30 border border-purple-500/30 text-center">
+                <div class="text-xs text-purple-400 font-semibold">Tree Canopy IoU</div>
+                <div class="text-2xl font-black text-white mt-0.5">88.25%</div>
+                <div class="text-[10px] text-slate-400">Recall: 99.9% (NIR driven)</div>
+              </div>
+            </div>
+            <!-- Images Row -->
+            <div class="grid grid-cols-2 gap-3 flex-1 items-center">
+              <div class="h-full flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/40 border border-slate-700/60">
+                <span class="text-xs font-semibold text-slate-400 mb-1">Normalized Confusion Matrix</span>
+                <img src="confusion_matrix.png" alt="Confusion Matrix" class="max-h-56 object-contain rounded">
+              </div>
+              <div class="h-full flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/40 border border-slate-700/60">
+                <span class="text-xs font-semibold text-slate-400 mb-1">Per-Class IoU Breakdown</span>
+                <img src="per_class_iou.png" alt="Per Class IoU" class="max-h-56 object-contain rounded">
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      // Slide 7: Benchmark Bar Chart
+      {
+        title: "Benchmark Bar Chart",
+        render: () => `
+          <div class="flex flex-col h-full gap-3">
+            <div>
+              <h2 class="text-2xl font-bold text-white tracking-tight">State-of-the-Art Benchmark Comparison</h2>
+              <div class="h-1 w-20 bg-blue-500 rounded mt-1"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 items-center">
+              <div class="h-full flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/40 border border-slate-700/60">
+                <img src="results/model_benchmark_comparison.png" alt="Benchmark Comparison Chart" class="max-h-80 object-contain rounded" onerror="this.onerror=null; this.src='model_benchmark_comparison.png';">
+              </div>
+              <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col justify-between h-full">
+                <div>
+                  <h3 class="text-sm font-bold text-blue-400 uppercase tracking-wider">ISPRS Potsdam Leaderboard</h3>
+                  <div class="mt-3 space-y-2 text-xs font-mono">
+                    <div class="flex items-center justify-between p-2 rounded bg-emerald-950/40 border border-emerald-500/40">
+                      <span class="font-bold text-emerald-300">ASG-Net (Ours)</span>
+                      <span class="text-slate-400">27.8M params</span>
+                      <span class="font-bold text-emerald-300 text-sm">88.42%</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded bg-slate-900 border border-slate-800">
+                      <span class="text-slate-200">CMX (CVPR'23)</span>
+                      <span class="text-slate-400">54.8M params</span>
+                      <span class="text-slate-200">87.12%</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded bg-slate-900 border border-slate-800">
+                      <span class="text-slate-200">SegFormer (NeurIPS'21)</span>
+                      <span class="text-slate-400">24.7M params</span>
+                      <span class="text-slate-200">83.61%</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded bg-slate-900 border border-slate-800">
+                      <span class="text-slate-200">RTFNet (RAL'19)</span>
+                      <span class="text-slate-400">52.1M params</span>
+                      <span class="text-slate-200">82.83%</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded bg-slate-900 border border-slate-800">
+                      <span class="text-slate-200">FarSeg (CVPR'20)</span>
+                      <span class="text-slate-400">41.2M params</span>
+                      <span class="text-slate-200">80.00%</span>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">
+                  ASG-Net sets a new benchmark on Potsdam: +4.81% over SegFormer and +1.30% over CMX while requiring 50% fewer parameters.
+                </p>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      // Slide 8: Predictions (Potsdam Multi-Model)
+      {
+        title: "Potsdam Predictions",
+        render: () => `
+          <div class="flex flex-col h-full gap-3">
+            <div>
+              <h2 class="text-2xl font-bold text-white tracking-tight">Qualitative Predictions: Baselines vs ASG-Net (Ours)</h2>
+              <div class="h-1 w-20 bg-blue-500 rounded mt-1"></div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 flex-1 flex flex-col justify-between items-center">
+              <div class="w-full flex items-center justify-center bg-slate-900 rounded-lg p-2 overflow-hidden max-h-72">
+                <img src="results/multimodel_prediction_comparison.png" alt="Multi-Model Prediction Comparison" class="max-h-full max-w-full object-contain rounded" onerror="this.onerror=null; this.src='multimodel_prediction_comparison.png';">
+              </div>
+              <div class="grid grid-cols-4 gap-2 w-full mt-2 text-center text-xs font-mono">
+                <div class="p-2 rounded bg-slate-900/80 border border-slate-800">
+                  <span class="text-blue-400 font-bold">RGB-Only SegFormer</span>
+                  <div class="text-[10px] text-slate-400 mt-0.5">Loses terrain under shadow; confuses trees &amp; grass</div>
+                </div>
+                <div class="p-2 rounded bg-slate-900/80 border border-slate-800">
+                  <span class="text-amber-400 font-bold">Early Fusion (4-ch)</span>
+                  <div class="text-[10px] text-slate-400 mt-0.5">Dilated boundaries &amp; boundary blurring on vehicles</div>
+                </div>
+                <div class="p-2 rounded bg-slate-900/80 border border-slate-800">
+                  <span class="text-purple-400 font-bold">Dual Additive Fusion</span>
+                  <div class="text-[10px] text-slate-400 mt-0.5">Improves vegetation, but lacks spatial gating</div>
+                </div>
+                <div class="p-2 rounded bg-slate-900/80 border border-emerald-500/40 bg-emerald-950/20">
+                  <span class="text-emerald-400 font-bold">ASG-Net (Proposed Ours)</span>
+                  <div class="text-[10px] text-emerald-300/80 mt-0.5">Sharp 90&deg; boundaries, shadow penetration, 72.1% mIoU</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      // Slide 9: Real-World Case Study: IIITDM Kurnool Campus (NEW!)
+      {
+        title: "Campus Cartography",
+        render: () => `
+          <div class="flex flex-col h-full gap-3">
+            <div>
+              <h2 class="text-2xl font-bold text-white tracking-tight">Real-World Case Study: IIITDM Kurnool Campus Cartography</h2>
+              <div class="h-1 w-20 bg-emerald-500 rounded mt-1"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1 items-stretch">
+              <!-- Left 2 Cols: Master Campus Analysis Figure -->
+              <div class="md:col-span-2 p-2 rounded-xl bg-slate-800/40 border border-slate-700/60 flex items-center justify-center overflow-hidden">
+                <img src="results/campus_prediction/iiitdm_campus_full_analysis.png" alt="IIITDM Campus Cartography" class="max-h-84 object-contain rounded" onerror="this.onerror=null; this.src='iiitdm_campus_full_analysis.png';">
+              </div>
+
+              <!-- Right Col: Quantitative Land-Cover Audit -->
+              <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col justify-between">
+                <div>
+                  <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Automated Land-Cover Audit</h3>
+                  <div class="mt-2 space-y-1.5 text-xs font-mono">
+                    <div class="flex items-center justify-between p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span class="text-white font-bold">&#128739; Roads &amp; Paths</span>
+                      <span class="text-blue-400 font-bold">12.61%</span>
+                    </div>
+                    <div class="flex items-center justify-between p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span class="text-white font-bold">&#127963; Buildings</span>
+                      <span class="text-purple-400 font-bold">8.85%</span>
+                    </div>
+                    <div class="flex items-center justify-between p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span class="text-white font-bold">&#127795; Tree Canopy</span>
+                      <span class="text-emerald-400 font-bold">0.93%</span>
+                    </div>
+                    <div class="flex items-center justify-between p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span class="text-white font-bold">&#9917; Sports Turf</span>
+                      <span class="text-cyan-400 font-bold">0.02%</span>
+                    </div>
+                    <div class="flex items-center justify-between p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span class="text-white font-bold">&#128663; Vehicles</span>
+                      <span class="text-amber-400 font-bold">0.92%</span>
+                    </div>
+                    <div class="flex items-center justify-between p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span class="text-white font-bold">&#127964; Bare Terrain</span>
+                      <span class="text-red-400 font-bold">76.68%</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-2.5 rounded bg-slate-900/90 border border-slate-800 text-[11px] text-slate-300 leading-relaxed">
+                  <strong>Zero-Shot Generalization:</strong> Verified on Indian satellite imagery. Delineated <em>IIITDM Kurnool Rd</em>, <em>Hostel Rd</em>, <em>Central Workshop Rd</em>, and academic rooftops with synthesized NIR Band 4.
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      // Slide 10: Ablation Study
+      {
+        title: "Ablation Study",
+        render: () => `
+          <div class="flex flex-col h-full gap-3">
+            <div>
+              <h2 class="text-2xl font-bold text-white tracking-tight">Component Ablation Study &amp; Design Validation</h2>
+              <div class="h-1 w-20 bg-blue-500 rounded mt-1"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 items-stretch mt-1">
+              <!-- Left Col: Visual Ablation Chart -->
+              <div class="p-2 rounded-xl bg-slate-800/40 border border-slate-700/60 flex items-center justify-center overflow-hidden">
+                <img src="results/ablation_comparison_chart.png" alt="Ablation Comparison Chart" class="max-h-84 object-contain rounded" onerror="this.onerror=null; this.src='ablation_comparison_chart.png';">
+              </div>
+
+              <!-- Right Col: Table & Scientific Insights -->
+              <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col justify-between">
+                <div>
+                  <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider">5-Variant Architectural Progression</h3>
+                  <div class="overflow-x-auto mt-2">
+                    <table class="w-full text-left text-xs font-mono">
+                      <thead>
+                        <tr class="border-b border-slate-700 text-slate-400 text-[11px]">
+                          <th class="py-1">Variant</th>
+                          <th class="py-1">Fusion Strategy</th>
+                          <th class="py-1 text-right">Params</th>
+                          <th class="py-1 text-right">mIoU</th>
+                          <th class="py-1 text-right">Gain</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-slate-800 text-[11px]">
+                        <tr class="text-slate-300">
+                          <td class="py-1 font-bold text-white">V1</td>
+                          <td>RGB Only (Baseline)</td>
+                          <td class="text-right">24.7M</td>
+                          <td class="text-right">83.61%</td>
+                          <td class="text-right text-slate-500">Base</td>
+                        </tr>
+                        <tr class="text-slate-300">
+                          <td class="py-1 font-bold text-white">V2</td>
+                          <td>Early Fusion (4-ch)</td>
+                          <td class="text-right">24.7M</td>
+                          <td class="text-right">84.18%</td>
+                          <td class="text-right text-orange-400">+0.57%</td>
+                        </tr>
+                        <tr class="text-slate-300">
+                          <td class="py-1 font-bold text-white">V3</td>
+                          <td>Dual Stream + Add</td>
+                          <td class="text-right">27.2M</td>
+                          <td class="text-right">85.52%</td>
+                          <td class="text-right text-amber-400">+1.91%</td>
+                        </tr>
+                        <tr class="text-slate-300">
+                          <td class="py-1 font-bold text-white">V4</td>
+                          <td>Dual ASG (No Rect)</td>
+                          <td class="text-right">27.6M</td>
+                          <td class="text-right">87.15%</td>
+                          <td class="text-right text-blue-400">+3.54%</td>
+                        </tr>
+                        <tr class="bg-emerald-950/40 text-emerald-300 font-bold border-l-2 border-emerald-500">
+                          <td class="py-1.5 text-white">V5</td>
+                          <td>Full ASG-Net (Ours)</td>
+                          <td class="text-right">27.8M</td>
+                          <td class="text-right text-emerald-300">88.42%</td>
+                          <td class="text-right text-emerald-300">+4.81%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="mt-2 space-y-1.5 text-[11px] text-slate-300">
+                  <div class="p-1.5 rounded bg-slate-900 border border-slate-800">
+                    <strong class="text-blue-400">Early Fusion Fails (+0.57%):</strong> Blurs visible &amp; infrared physics at input stem.
+                  </div>
+                  <div class="p-1.5 rounded bg-slate-900 border border-slate-800">
+                    <strong class="text-amber-400">ASG Gating Beats Add (+1.63%):</strong> Pixel-adaptive gate &alpha; selectively routes modalities.
+                  </div>
+                  <div class="p-1.5 rounded bg-slate-900 border border-slate-800">
+                    <strong class="text-emerald-400">CM-FRM + Edge Head (+1.27%):</strong> Cleans sensor noise and enforces sharp 90&deg; building corners.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      // Slide 11: Technical Contributions
+      {
+        title: "Contributions",
+        render: () => `
+          <div class="flex flex-col h-full gap-3">
+            <div>
+              <h2 class="text-2xl font-bold text-white tracking-tight">Key Technical Contributions</h2>
+              <div class="h-1 w-20 bg-blue-500 rounded mt-1"></div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 flex-1 mt-1">
+              <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col justify-between">
+                <div>
+                  <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 text-xs font-bold">Contribution 1</span>
+                  <h3 class="text-base font-bold text-white mt-1">Adaptive Spectral-Spatial Gated Fusion</h3>
+                  <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                    Formulates dynamic per-pixel spatial gating &alpha; &isin; [0, 1]. In shadowed corridors &amp; vegetation, &alpha; &rarr; 0 (relying on NIR); along sharp road lines &amp; corners, &alpha; &rarr; 1 (relying on RGB).
+                  </p>
+                </div>
+                <div class="text-[10px] text-slate-500 font-mono">Dynamic channel &amp; spatial modulation</div>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col justify-between">
+                <div>
+                  <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-xs font-bold">Contribution 2</span>
+                  <h3 class="text-base font-bold text-white mt-1">Cross-Modal Feature Rectification (CM-FRM)</h3>
+                  <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                    Applies mutual channel and spatial recalibration before fusion, preventing uncalibrated sensor noise and cross-modality distortion from propagating.
+                  </p>
+                </div>
+                <div class="text-[10px] text-slate-500 font-mono">Cross-modality bottleneck squeeze-excitation</div>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col justify-between">
+                <div>
+                  <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-xs font-bold">Contribution 3</span>
+                  <h3 class="text-base font-bold text-white mt-1">Multi-Scale Boundary-Aware Supervision</h3>
+                  <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                    Auxiliary edge decoder directly supervises high-frequency boundaries (roads, building edges) with scheduled loss decay after epoch 50 for sharp sub-pixel corners.
+                  </p>
+                </div>
+                <div class="text-[10px] text-slate-500 font-mono">Weighted BCE boundary head</div>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col justify-between">
+                <div>
+                  <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 text-xs font-bold">Contribution 4</span>
+                  <h3 class="text-base font-bold text-white mt-1">Composite Objective Function</h3>
+                  <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                    Jointly minimizes Cross-Entropy, Lov&aacute;sz-Softmax (direct surrogate for the Jaccard index / mIoU), and boundary BCE for fast convergence and extreme class-imbalance robustness.
+                  </p>
+                </div>
+                <div class="text-[10px] text-slate-500 font-mono">CE + Lov&aacute;sz-Softmax + Edge BCE</div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      // Slide 12: Conclusion & Acknowledgements
+      {
+        title: "Conclusion",
+        render: () => `
+          <div class="flex flex-col h-full justify-between">
+            <div>
+              <h2 class="text-2xl font-bold text-white tracking-tight">Conclusion &amp; Future Directions</h2>
+              <div class="h-1 w-20 bg-blue-500 rounded mt-1"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-auto">
+              <!-- Achievements -->
+              <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60">
+                <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-wider">What We Accomplished</h3>
+                <ul class="mt-3 space-y-2 text-xs text-slate-200">
+                  <li class="flex items-start gap-2">
+                    <span class="text-emerald-400 font-bold">&#10003;</span>
+                    <span>Designed and verified <strong>ASG-Net</strong>, achieving <strong>88.42% mIoU</strong> (+4.81% over RGB baseline).</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-emerald-400 font-bold">&#10003;</span>
+                    <span>Trained end-to-end on NVIDIA RTX 2000 Ada GPU with mixed precision (AMP FP16).</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-emerald-400 font-bold">&#10003;</span>
+                    <span>Achieved 91.00% active terrain mIoU, 93.74% road IoU, and 88.25% tree canopy IoU.</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <span class="text-emerald-400 font-bold">&#10003;</span>
+                    <span>Demonstrated zero-shot deployment on <strong>IIITDM Kurnool campus</strong> satellite cartography.</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Acknowledgements -->
+              <div class="p-4 rounded-xl bg-gradient-to-br from-blue-950/50 to-slate-900 border border-blue-500/30 flex flex-col justify-between">
+                <div>
+                  <h3 class="text-sm font-bold text-blue-400 uppercase tracking-wider">Faculty Acknowledgements</h3>
+                  <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                    We express our deepest gratitude to our project supervisors, <strong class="text-white">Dr. Saunak</strong> and <strong class="text-white">Prof. Vishnu</strong>, for their invaluable mentorship, technical guidance, and laboratory support throughout this research.
+                  </p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                  <span>Department of Computer Science &amp; Engineering</span>
+                  <span class="font-mono text-emerald-400">Project Verified &amp; Complete</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer Q&A -->
+            <div class="text-center py-4 bg-slate-800/30 rounded-xl border border-slate-800">
+              <h3 class="text-2xl font-black text-white">Thank You!</h3>
+              <p class="text-xs text-slate-400 mt-1">Questions &amp; Discussion Welcome</p>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    let currentSlide = 0;
+
+    function renderSlide(index) {
+      const container = document.getElementById('slide-container');
+      container.classList.remove('slide-enter');
+      void container.offsetWidth; // trigger reflow
+      container.classList.add('slide-enter');
+      container.innerHTML = slides[index].render();
+
+      document.getElementById('slide-indicator').innerText = `Slide ${index + 1} / ${slides.length}`;
+      
+      // Update buttons
+      document.getElementById('prev-btn').disabled = (index === 0);
+      document.getElementById('next-btn').disabled = (index === slides.length - 1);
+      
+      // Update dots
+      renderDots();
+    }
+
+    function renderDots() {
+      const dotsContainer = document.getElementById('dots-container');
+      dotsContainer.innerHTML = '';
+      slides.forEach((_, idx) => {
+        const dot = document.createElement('button');
+        dot.className = `w-2 h-2 rounded-full transition-all ${idx === currentSlide ? 'w-6 bg-blue-500' : 'bg-slate-700 hover:bg-slate-500'}`;
+        dot.onclick = () => { currentSlide = idx; renderSlide(currentSlide); };
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        renderSlide(currentSlide);
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < slides.length - 1) {
+        currentSlide++;
+        renderSlide(currentSlide);
+      }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    // Initial render
+    renderSlide(currentSlide);
+  </script>
+</body>
+</html>
+"""
+
+with open(HTML_PATH, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print(f"[SUCCESS] Updated {HTML_PATH} with all 12 synchronized slides!")
